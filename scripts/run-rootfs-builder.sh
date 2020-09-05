@@ -14,6 +14,10 @@ PASS=$2
 CONFIG_FILE=${3:-"config/image.json"}
 MOUNT_POINT=${4:-"mount/"}
 
+if [ ! -e "$MOUNT_POINT" ]; then
+    mkdir -p "$MOUNT_POINT"
+fi
+
 echo "Generating rootfs image"
 python3 scripts/create-image.py --spec $CONFIG_FILE
 
@@ -21,8 +25,8 @@ echo "Bootstrapping debian userspace"
 debootstrap testing $MOUNT_POINT
 
 echo "Copying deployment script and configuring target system"
-cp scripts/deploy-depends-and-configure.sh $MOUNT_POINT/run.sh
-chroot $MOUNT_POINT/ run.sh $USER $PASS
+cp scripts/deploy.sh $MOUNT_POINT/run.sh
+chroot $MOUNT_POINT/ /bin/bash /run.sh $USER $PASS
 rm $MOUNT_POINT/run.sh
 cp -rf config/guest/* $MOUNT_POINT/
 

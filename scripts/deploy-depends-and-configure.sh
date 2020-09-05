@@ -9,8 +9,8 @@ USER=$1
 PASS=$2
 
 apt-get update
-apt-get install lxc lxctl lxc-templates sudo ssh
+apt-get install -y lxc lxctl lxc-templates sudo ssh
 
-echo "$PASS" | passwd root --stdin
-useradd -D -G sudo,wheel,video,audio $USER
-echo "$PASS" | passwd "$USER" --stdin
+echo "root:$PASS" | chpasswd
+useradd -m -s /bin/bash -G sudo,video,audio $USER
+echo "$USER:$PASS" | chpasswd

@@ -11,8 +11,9 @@ mkdir -p build/{scripts,config}
 
 cp scripts/run-rootfs-builder.sh build/run.sh
 cp scripts/create-image.py build/scripts/
+cp scripts/deploy-depends-and-configure.sh build/scripts/deploy.sh
 cp dockerfiles/rootfs-builder.dockerfile build/Dockerfile
-cp -r default-config/ build/config
+cp -r default-config/* build/config/
 git clone https://github.com/kalyankondapally/debian-rootfs build/debian-rootfs
 cd build/
 
