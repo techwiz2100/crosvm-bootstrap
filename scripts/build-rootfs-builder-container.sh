@@ -1,14 +1,18 @@
 #! /bin/bash
 
+# build-rootfs-builder-container.sh
+# Set up build environment for docker container that generates Debian rootfs
+# then calls docker build.
+
 if [ -e "build" ]; then
     rm -rf build
 fi
-mkdir -p build/scripts
+mkdir -p build/{scripts,config}
 
 cp scripts/run-rootfs-builder.sh build/run.sh
 cp scripts/create-image.py build/scripts/
 cp dockerfiles/rootfs-builder.dockerfile build/Dockerfile
-cp -r default-config/ build/
+cp -r default-config/ build/config
 git clone https://github.com/kalyankondapally/debian-rootfs build/debian-rootfs
 cd build/
 
@@ -20,4 +24,4 @@ else
     echo "COMMIT-$SHA" > VERSION
 fi
 
-#docker build .
+docker build -t rootfs-builder:latest .
