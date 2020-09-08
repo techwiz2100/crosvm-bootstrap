@@ -82,7 +82,7 @@ class ImageDefinition:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", help="Specify image spec json file.", 
-                        metavar="FILE", nargs=1, default="config/image.json")
+                        metavar="FILE", nargs=1, default=["config/image.json"])
     parser.add_argument("--unmount", action="store_true",
                         help="Unmount specified image. (ignores other options except spec)")
     parser.add_argument("--mount", action="store_true",
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         exit(1)
 
     if args["unmount"]:
-        os.system("umount " + targetImage.mountPoint)
+        os.system("umount -l " + targetImage.mountPoint)
         exit(0)
 
     if args["create"]:

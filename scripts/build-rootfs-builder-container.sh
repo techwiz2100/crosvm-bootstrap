@@ -11,6 +11,7 @@ mkdir -p build/{scripts,config}
 
 cp scripts/run-rootfs-builder.sh build/run.sh
 cp scripts/create-image.py build/scripts/
+cp scripts/create-users.py build/scripts/
 cp scripts/system-packages.sh build/scripts/system.sh
 cp scripts/user-configuration.sh build/scripts/user.sh
 cp scripts/package-builder.sh build/scripts/builder.sh

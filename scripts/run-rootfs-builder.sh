@@ -24,20 +24,23 @@ mount -t proc /proc $MOUNT_POINT/proc
 mount -o bind /dev/shm $MOUNT_POINT/dev/shm
 mount -o bind /dev/pts $MOUNT_POINT/dev/pts
 
-echo "Copying user configuration script..."
-cp scripts/user.sh $MOUNT_POINT/user.sh
-echo "Configuring the user..."
-chroot $MOUNT_POINT/ /bin/bash /user.sh $USER $PASS
-rm $MOUNT_POINT/user.sh
-
-echo "Configuring rootfs..."
-cp -rf config/guest/* $MOUNT_POINT/
-
 echo "Copying script to install needed system packages in rootfs..."
 cp scripts/system.sh $MOUNT_POINT/system.sh
 echo "Installing system packages in rootfs...."
 chroot $MOUNT_POINT/ /bin/bash /system.sh
 rm $MOUNT_POINT/system.sh
+
+echo "Copying user configuration script..."
+mkdir -p $MOUNT_POINT/deploy/config
+cp scripts/user.sh $MOUNT_POINT/deploy/
+cp scripts/create-users.py $MOUNT_POINT/deploy/
+cp config/users.json $MOUNT_POINT/deploy/config/
+echo "Configuring the user..."
+chroot $MOUNT_POINT/ /bin/bash /deploy/user.sh
+rm -rf $MOUNT_POINT/deploy/
+
+echo "Configuring rootfs..."
+cp -rf config/guest/* $MOUNT_POINT/
 
 echo "Copying script to build Graphics drivers and other packages..."
 cp -rf config/patches $MOUNT_POINT/build/
