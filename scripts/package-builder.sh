@@ -80,5 +80,5 @@ cd /build/crosvm/src/platform2/vm_tools/sommelier
 
 # Build Sommelier
 git am /build/patches/sommelier/*.patch
-meson build -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=/usr/lib/x86_64-linux-gnu
+meson build -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=/usr/local/lib/x86_64-linux-gnu
 ninja -C build install
