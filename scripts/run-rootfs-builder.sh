@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# run-rootfs-builder.sh USERNAME PASSWORD [CONFIG_FILE] [MOUNT_POINT]
+# run-rootfs-builder.sh [USERNAME PASSWORD CONFIG_FILE MOUNT_POINT]
 # Generate debian rootfs image using specified config file and mounted in the
 # container at the specified path (should match mountPoint specified in json file)
 
@@ -14,10 +14,15 @@ if [ ! -e "$MOUNT_POINT" ]; then
 fi
 
 echo "Generating rootfs image"
-python3 scripts/create-image.py --spec $CONFIG_FILE
+python3 scripts/create-image.py --spec $CONFIG_FILE --create --mount
 
 echo "Bootstrapping debian userspace"
 debootstrap --arch=amd64 testing $MOUNT_POINT
+
+echo "Configuring chroot environment"
+mount -t proc /proc $MOUNT_POINT/proc
+mount -o bind /dev/shm $MOUNT_POINT/dev/shm
+mount -o bind /dev/pts $MOUNT_POINT/dev/pts
 
 echo "Copying user configuration script..."
 cp scripts/user.sh $MOUNT_POINT/user.sh
@@ -35,8 +40,6 @@ chroot $MOUNT_POINT/ /bin/bash /system.sh
 rm $MOUNT_POINT/system.sh
 
 echo "Copying script to build Graphics drivers and other packages..."
-mount -t proc /proc $MOUNT_POINT/proc
-mount -o bind /dev/shm $MOUNT_POINT/dev/shm
 cp -rf config/patches $MOUNT_POINT/build/
 cp scripts/builder.sh $MOUNT_POINT/builder.sh
 echo "Building Graphics Drivers..."

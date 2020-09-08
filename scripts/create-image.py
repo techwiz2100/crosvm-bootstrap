@@ -83,19 +83,28 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", help="Specify image spec json file.", 
                         metavar="FILE", nargs=1, default="config/image.json")
-    parser.add_argument("--only-mount", action="store_true",
-                        help="Skip image creation and mount existing image.")
     parser.add_argument("--unmount", action="store_true",
-                        help="Helper function to unmount specified image.")
+                        help="Unmount specified image. (ignores other options except spec)")
+    parser.add_argument("--mount", action="store_true",
+                        help="Mount specified image")
+    parser.add_argument("--create", action="store_true",
+                        help="Create the specified image")
     args = vars(parser.parse_args())
+    
     #print (args)
     targetImage = ImageDefinition(args["spec"][0])
     targetImagePath = targetImage.path + "/" + targetImage.name
+
+    if not args["unmount"] and not args["mount"] and not args["create"]:
+        print("Must specify at least one function")
+        parser.print_usage()
+        exit(1)
+
     if args["unmount"]:
         os.system("umount " + targetImage.mountPoint)
         exit(0)
 
-    if not args["only_mount"]:
+    if args["create"]:
         dd_count = targetImage.sizeInMB if not targetImage.isSparse else 0
         dd_seek = targetImage.sizeInMB if targetImage.isSparse else 0
         dd_cmd = ("dd if=/dev/zero of={0} bs=1M count={1} seek={2}").format(
@@ -106,7 +115,7 @@ if __name__ == "__main__":
         #print (mkfs_cmd)
         os.system(mkfs_cmd)
     
-    if args["only_mount"] or targetImage.doMount:
+    if args["mount"] or targetImage.doMount:
         mount_cmd = ("mount -o loop -t {0} {1} {2}").format(
             targetImage.fstype.value, targetImagePath, targetImage.mountPoint)
         #print (mount_cmd)
