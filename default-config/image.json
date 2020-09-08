@@ -5,5 +5,5 @@
     "isSparse": true,
     "doMount": true,
     "mountPoint": "mount/",
-    "sizeInMB": 2048
+    "sizeInMB": 20480
 }
