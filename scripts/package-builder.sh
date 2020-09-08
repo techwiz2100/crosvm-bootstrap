@@ -27,6 +27,8 @@ ln -s /usr/bin/python3 /usr/bin/python
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH=/build/depot_tools:$PATH
 
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
 repo init -u  https://github.com/kalyankondapally/manifest.git -m default.xml
 repo sync
 
@@ -39,6 +41,16 @@ cd /build/mesa-drm
 # Build drm
 meson build.lib64 -Dintel=true  && ninja -C build.lib64 install
 meson build.lib32 --libdir=lib -Dintel=true  && ninja -C build.lib32 install
+cd /build/wayland
+
+# Build wayland
+./autogen.sh --disable-documentation
+make && make install
+cd /build/wayland-protocols
+
+# Build wayland-protocols
+./autogen.sh
+make install
 cd /build/mesa
 
 # Build mesa

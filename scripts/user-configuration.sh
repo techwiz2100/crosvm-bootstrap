@@ -16,6 +16,3 @@ echo "root:$PASS" | chpasswd
 useradd -m -s /bin/bash -G sudo,audio,video,input,render,lp $USER
 echo "$USER:$PASS" | chpasswd
 
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-
