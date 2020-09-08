@@ -12,7 +12,6 @@ Config file specifies the default parameters for the rootfs to be created.
     "fstype": "ext4",
     "isSparse": true,
     "doMount": true,
-    "mountPoint": "where/to/mount/in/container/",
     "sizeInMB": 2048
 }
 ```
