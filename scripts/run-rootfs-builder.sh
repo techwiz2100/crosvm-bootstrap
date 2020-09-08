@@ -65,6 +65,15 @@ rm $MOUNT_POINT/build-kernel-crosvm.sh
 if [ -f $MOUNT_POINT/build/drm-intel/vmlinux ]; then
   echo "Copying Kernel image to output/ folder..."
   cp $MOUNT_POINT/build/drm-intel/vmlinux /app/output/
+else
+  echo "Kernel failed to built. Nothing to copy."
+fi
+
+if [ -f $MOUNT_POINT/cros_vm/src/platform/crosvm/target/debug/crosvm ]; then
+  echo "Copying crosvm to output/ folder..."
+  cp $MOUNT_POINT/cros_vm/src/platform/crosvm/target/debug/crosvm /app/output/
+else
+  echo "Crosvm failed to be built. Nothing to copy."
 fi
 
 echo "Unmounting image"
