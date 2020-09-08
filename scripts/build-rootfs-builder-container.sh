@@ -14,7 +14,6 @@ cp scripts/create-image.py build/scripts/
 cp scripts/deploy-depends-and-configure.sh build/scripts/deploy.sh
 cp dockerfiles/rootfs-builder.dockerfile build/Dockerfile
 cp -r default-config/* build/config/
-git clone https://github.com/kalyankondapally/debian-rootfs build/debian-rootfs
 cd build/
 
 SHA=`git rev-parse --short HEAD 2>/dev/null`
