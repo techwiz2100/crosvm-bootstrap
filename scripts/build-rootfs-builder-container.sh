@@ -14,10 +14,11 @@ cp scripts/create-image.py build/scripts/
 cp scripts/create-users.py build/scripts/
 cp scripts/system-packages.sh build/scripts/system.sh
 cp scripts/user-configuration.sh build/scripts/user.sh
+cp scripts/setup-build-directories.sh build/scripts/setup-build-directories.sh
 cp scripts/package-builder.sh build/scripts/builder.sh
+cp scripts/build-kernel-crosvm.sh build/scripts/build-kernel-crosvm.sh
 cp dockerfiles/rootfs-builder.dockerfile build/Dockerfile
 cp -r default-config/* build/config/
-cp -rf patches build/patches
 cd build/
 
 SHA=`git rev-parse --short HEAD 2>/dev/null`
