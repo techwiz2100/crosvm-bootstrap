@@ -23,9 +23,11 @@ echo "Copying deployment script and configuring target system"
 cp scripts/deploy.sh $MOUNT_POINT/run.sh
 cp -rf config/guest/* $MOUNT_POINT/
 mount -t proc /proc $MOUNT_POINT/proc
+mount -o bind /dev/shm $MOUNT_POINT/dev/shm
 chroot $MOUNT_POINT/ /bin/bash /run.sh $USER $PASS
 rm $MOUNT_POINT/run.sh
 umount $MOUNT_POINT/proc
+umount $MOUNT_POINT/dev/shm
 
 echo "Unmounting image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --unmount

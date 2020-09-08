@@ -50,6 +50,11 @@ rustup default stable
 
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH=/build/depot_tools:$PATH
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+
+// Repo initialization and cloning all needed Libraries.
+ln -s /usr/bin/python3 /usr/bin/python
 
 repo init -u  https://github.com/kalyankondapally/manifest.git -m default.xml
 repo sync
