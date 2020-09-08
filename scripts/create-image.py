@@ -90,7 +90,7 @@ if __name__ == "__main__":
     parser.add_argument("--create", action="store_true",
                         help="Create the specified image")
     args = vars(parser.parse_args())
-    
+
     #print (args)
     targetImage = ImageDefinition(args["spec"][0])
     targetImagePath = targetImage.path + "/" + targetImage.name
