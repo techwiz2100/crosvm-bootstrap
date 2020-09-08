@@ -92,7 +92,7 @@ if __name__ == "__main__":
     targetImage = ImageDefinition(args["spec"][0])
     targetImagePath = targetImage.path + "/" + targetImage.name
     if args["unmount"]:
-        os.system("umount " + targetImage.mountPoint)
+        os.system("umount -l " + targetImage.mountPoint)
         exit(0)
 
     if not args["only_mount"]:

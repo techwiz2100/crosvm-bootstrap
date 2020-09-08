@@ -8,7 +8,6 @@ export CARGO_HOME=/usr/local/cargo
 export PATH=/usr/local/cargo/bin:$PATH
 export RUSTFLAGS='--cfg hermetic'
 
-mkdir /build
 cd /build
 
 curl -LO "https://static.rust-lang.org/rustup/archive/1.22.1/x86_64-unknown-linux-gnu/rustup-init" && echo "49c96f3f74be82f4752b8bffcf81961dea5e6e94ce1ccba94435f12e871c3bdb *rustup-init" | sha256sum -c -
@@ -72,13 +71,3 @@ cd /build/virglrenderer
 # Build virglrenderer
 meson build.lib64 -Dplatforms=auto -Dminigbm_allocation=true  && ninja -C build.lib64 install
 meson build.lib32 --libdir=lib -Dplatforms=auto -Dminigbm_allocation=true  && ninja -C build.lib32 install
-
-# Build CrosVM
-cd /build/crosvm/src/platform/crosvm
-cargo build --features 'default-no-sandbox wl-dmabuf gpu x'
-cd /build/crosvm/src/platform2/vm_tools/sommelier
-
-# Build Sommelier
-git am /build/patches/sommelier/*.patch
-meson build -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=/usr/local/lib/x86_64-linux-gnu
-ninja -C build install
