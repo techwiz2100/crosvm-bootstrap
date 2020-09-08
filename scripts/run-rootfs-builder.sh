@@ -19,15 +19,29 @@ python3 scripts/create-image.py --spec $CONFIG_FILE
 echo "Bootstrapping debian userspace"
 debootstrap --arch=amd64 testing $MOUNT_POINT
 
-echo "Copying deployment script and configuring target system"
-cp scripts/deploy.sh $MOUNT_POINT/run.sh
+echo "Copying user configuration script..."
+cp scripts/user.sh $MOUNT_POINT/user.sh
+echo "Configuring the user..."
+chroot $MOUNT_POINT/ /bin/bash /user.sh $USER $PASS
+rm $MOUNT_POINT/user.sh
+
+echo "Configuring rootfs..."
 cp -rf config/guest/* $MOUNT_POINT/
+
+echo "Copying script to install needed system packages in rootfs..."
+cp scripts/system.sh $MOUNT_POINT/system.sh
+echo "Installing system packages in rootfs...."
+chroot $MOUNT_POINT/ /bin/bash /system.sh
+rm $MOUNT_POINT/system.sh
+
+echo "Copying script to build Graphics drivers and other packages..."
 mount -t proc /proc $MOUNT_POINT/proc
 mount -o bind /dev/shm $MOUNT_POINT/dev/shm
-chroot $MOUNT_POINT/ /bin/bash /run.sh $USER $PASS
-rm $MOUNT_POINT/run.sh
-umount $MOUNT_POINT/proc
-umount $MOUNT_POINT/dev/shm
+cp -rf config/patches $MOUNT_POINT/build/
+cp scripts/builder.sh $MOUNT_POINT/builder.sh
+echo "Building Graphics Drivers..."
+chroot $MOUNT_POINT/ /bin/bash /builder.sh
+rm $MOUNT_POINT/builder.sh
 
 echo "Unmounting image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --unmount
