@@ -22,7 +22,7 @@ debootstrap --arch=amd64 testing $MOUNT_POINT
 echo "Copying deployment script and configuring target system"
 cp scripts/deploy.sh $MOUNT_POINT/run.sh
 cp -rf config/guest/* $MOUNT_POINT/
-mount --bind /proc $MOUNT_POINT/proc
+mount -t proc /proc $MOUNT_POINT/proc
 chroot $MOUNT_POINT/ /bin/bash /run.sh $USER $PASS
 rm $MOUNT_POINT/run.sh
 umount $MOUNT_POINT/proc
