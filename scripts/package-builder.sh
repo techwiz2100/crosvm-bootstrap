@@ -21,7 +21,7 @@ cargo --version
 rustc --version
 rustup default stable
 
-// Repo initialization and cloning all needed Libraries.
+# Repo initialization and cloning all needed Libraries.
 ln -s /usr/bin/python3 /usr/bin/python
 
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git

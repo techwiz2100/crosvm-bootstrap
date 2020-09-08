@@ -6,7 +6,7 @@
 dpkg --configure -a
 apt update
 apt upgrade
-apt-get install -y lxc lxctl lxc-templates sudo ssh git meson gcc g++
+apt-get install -y sudo ssh git meson gcc g++
 apt-get install -y autoconf nasm make python3-mako llvm xutils-dev libtool
 apt-get install -y cmake pkg-config libatomic-ops-dev python3-setuptools
 apt-get install -y libffi-dev libxml2-dev bison flex zlib1g-dev libcap-dev
