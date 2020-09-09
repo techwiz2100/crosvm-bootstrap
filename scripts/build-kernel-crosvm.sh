@@ -36,7 +36,7 @@ then
   echo "Found sommelier folder. Building sommelier..."
   cd /build/cros_vm/src/platform2/vm_tools/sommelier
   # Build Sommelier
-  if [ -d "/build/cros_vm/src/platform2/vm_tools/sommelier/build" ]
+  if [ -d "/build/cros_vm/src/platform2/vm_tools/sommelier/build" ]; then
     rm -rf /build/cros_vm/src/platform2/vm_tools/sommelier/build/
   fi
 
