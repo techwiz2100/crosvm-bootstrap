@@ -28,6 +28,7 @@ export PATH=/build/depot_tools:$PATH
 
 git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
+git config --global color.ui false
 repo init -u  https://github.com/kalyankondapally/manifest.git -m default.xml
 repo sync
 
@@ -53,8 +54,8 @@ make install
 cd /build/mesa
 
 # Build mesa
-meson build.lib64  -Dgallium-drivers=virgl,swrast -Dvulkan-drivers=intel -Dgallium-vdpau=false -Dgallium-va=false  -Dglx=dri -Dglx-direct=true -Degl=true  -Dopengl=true && ninja -C build.lib64 install
-meson build.lib32 --libdir=lib -Dplatforms=auto  -Dgallium-drivers=virgl,swrast -Dvulkan-drivers=intel -Dgallium-vdpau=false -Dgallium-va=false  -Dglx=dri -Degl=true && ninja -C build.lib32 install
+meson build.lib64 -Dplatforms=x11,wayland,surfaceless,drm -Ddri-drivers=i965 -Dgallium-drivers=iris,virgl,swrast -Dvulkan-drivers=intel -Dgallium-vdpau=false -Dgallium-va=false -Dopengl=true -Dglx=dri -Dselinux=true -Dgles1=true -Dgles2=true -Dglx-direct=true -Degl=true && ninja -C build.lib64 install
+meson build.lib32 --libdir=lib -Dplatforms=x11,wayland,surfaceless,drm -Ddri-drivers=i965 -Dgallium-drivers=iris,virgl,swrast -Dvulkan-drivers=intel -Dgallium-vdpau=false -Dgallium-va=false -Dopengl=true -Dglx=dri -Dselinux=true -Dgles1=true -Dgles2=true -Dglx-direct=true -Degl=true && ninja -C build.lib32 install
 cd /build/libepoxy
 
 # Build libepoxy

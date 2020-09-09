@@ -17,6 +17,7 @@ cp scripts/user-configuration.sh build/scripts/user.sh
 cp scripts/setup-build-directories.sh build/scripts/setup-build-directories.sh
 cp scripts/package-builder.sh build/scripts/builder.sh
 cp scripts/build-kernel-crosvm.sh build/scripts/build-kernel-crosvm.sh
+cp scripts/services.sh build/scripts/services.sh
 cp dockerfiles/rootfs-builder.dockerfile build/Dockerfile
 cp -r default-config/* build/config/
 cd build/

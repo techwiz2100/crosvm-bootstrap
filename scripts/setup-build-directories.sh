@@ -30,12 +30,3 @@ then
 else
   echo "/build/drm-intel exists."
 fi
-
-echo "Checking if /build/patches exists.."
-if [ ! -d "/build/patches" ]
-then
-  echo "Creating /build/patches directory."
-  mkdir /build/patches
-else
-  echo "/build/patches exists."
-fi

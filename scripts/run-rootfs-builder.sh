@@ -45,6 +45,11 @@ rm -rf $MOUNT_POINT/deploy/
 echo "Configuring rootfs..."
 cp -rf config/guest/* $MOUNT_POINT/
 
+# Enable all needed services
+cp scripts/services.sh $MOUNT_POINT/services.sh
+chroot $MOUNT_POINT/ /bin/bash /services.sh $USER
+rm $MOUNT_POINT/services.sh
+
 # Ensure all directories and mount points are setup.
 cp scripts/setup-build-directories.sh $MOUNT_POINT/setup-build-directories.sh
 chroot $MOUNT_POINT/ /bin/bash /setup-build-directories.sh
@@ -60,7 +65,6 @@ rm $MOUNT_POINT/builder.sh
 # Build Kernel and cros_vm.
 mount -o bind /app/drm-intel $MOUNT_POINT/build/drm-intel
 mount -o bind /app/cros_vm $MOUNT_POINT/build/cros_vm
-mount -o bind /app/patches $MOUNT_POINT/build/patches
 cp scripts/build-kernel-crosvm.sh $MOUNT_POINT/build-kernel-crosvm.sh
 chroot $MOUNT_POINT/ /bin/bash /build-kernel-crosvm.sh
 rm $MOUNT_POINT/build-kernel-crosvm.sh
@@ -71,9 +75,18 @@ else
   echo "Kernel failed to built. Nothing to copy."
 fi
 
-if [ -f $MOUNT_POINT/cros_vm/src/platform/crosvm/target/debug/crosvm ]; then
+if [ -f $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm ]; then
   echo "Copying crosvm to output/ folder..."
-  cp $MOUNT_POINT/cros_vm/src/platform/crosvm/target/debug/crosvm /app/output/
+  mkdir /app/output/debug
+  mkdir /app/output/release
+
+  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm /app/output/debug/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/debug/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/debug/
+
+  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/release/crosvm /app/output/release/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/release/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/release/
 else
   echo "Crosvm failed to be built. Nothing to copy."
 fi
