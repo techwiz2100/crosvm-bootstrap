@@ -28,6 +28,7 @@ export PATH=/build/depot_tools:$PATH
 
 git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
+git config --global color.ui false
 repo init -u  https://github.com/kalyankondapally/manifest.git -m default.xml
 repo sync
 

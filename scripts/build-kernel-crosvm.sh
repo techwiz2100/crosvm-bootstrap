@@ -33,13 +33,6 @@ if [ -d "/build/cros_vm/src/platform2/vm_tools/sommelier" ]
 then
   echo "Found sommelier folder. Building sommelier..."
   cd /build/cros_vm/src/platform2/vm_tools/sommelier
-  if [ ! -d "$MOUNT_POINT/build/patches/sommelier/" ]
-    then
-      echo "Don't have any patches to apply to Sommelier project."
-    else
-      echo "Applying patches to Sommelier project."
-      git am /build/patches/sommelier/*.patch
-  fi
   # Build Sommelier
   meson build -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=/usr/local/lib/x86_64-linux-gnu
   ninja -C build install
