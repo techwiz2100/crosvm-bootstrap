@@ -77,9 +77,16 @@ fi
 
 if [ -f $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm ]; then
   echo "Copying crosvm to output/ folder..."
-  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm /app/output/
-  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/
-  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/
+  mkdir /app/output/debug
+  mkdir /app/output/release
+
+  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm /app/output/debug/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/debug/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/debug/
+
+  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/release/crosvm /app/output/release/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/release/
+  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/release/
 else
   echo "Crosvm failed to be built. Nothing to copy."
 fi

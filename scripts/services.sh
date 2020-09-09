@@ -1,7 +1,7 @@
 #! /bin/bash
 
-# system-packages.sh
-# Install support packages and configure system.
+# services.sh
+# Enable needed services.
 
 USER=$1
 

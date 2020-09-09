@@ -24,7 +24,9 @@ if [ -d "/build/cros_vm/src/platform/crosvm" ]
 then
   echo "Found cros_vm folder. Building cros_vm..."
   cd /build/cros_vm/src/platform/crosvm
+  cargo clean
   cargo build --features 'default-no-sandbox wl-dmabuf gpu x'
+  cargo build --release --features 'default-no-sandbox wl-dmabuf gpu x'
 else
   echo "Unable to find cros_vm folder.cros_vm is not built."
 fi
@@ -34,6 +36,9 @@ then
   echo "Found sommelier folder. Building sommelier..."
   cd /build/cros_vm/src/platform2/vm_tools/sommelier
   # Build Sommelier
+  if [ -d "build" ]
+    rm -rf build/
+
   meson build -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=/usr/local/lib/x86_64-linux-gnu
   ninja -C build install
 else
