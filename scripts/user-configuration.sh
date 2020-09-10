@@ -5,4 +5,3 @@
 
 cd /deploy/
 ./create-users.py
-
