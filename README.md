@@ -4,11 +4,12 @@ A collection of scripts and dockerfiles to generate Docker images meant to host
 [crosvm](https://chromium.googlesource.com/chromiumos/platform/crosvm/).
 
 ## Quickstart
-1. Checkout 3rd party sources using repotool in parent directory:
+1. [Set up depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)
+2. Checkout 3rd party sources using repotool in parent directory:
 `repo init -u https://github.com/kalyankondapally/bootstrap-manifest.git -m default.xml`
-2. Run `./check-environment.sh` to make sure your system has docker set up
+3. Run `./check-environment.sh` to make sure your system has docker set up
 correctly.
-3. Run `./clean-build.sh` to kick off the build of the container and generate
+4. Run `./clean-build.sh` to kick off the build of the container and generate
 a rootfs image using the default settings.
 
 ## How to customize
