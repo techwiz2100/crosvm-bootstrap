@@ -14,6 +14,10 @@ if [ ! -e "$MOUNT_POINT" ]; then
     mkdir -p "$MOUNT_POINT"
 fi
 
+if [ ! -e "$MOUNT_POINT/build" ]; then
+    mkdir -p "$MOUNT_POINT/build"
+fi
+
 # Generate initial rootfs image.
 echo "Generating rootfs image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --create --mount
@@ -50,44 +54,31 @@ cp scripts/services.sh $MOUNT_POINT/services.sh
 chroot $MOUNT_POINT/ /bin/bash /services.sh $USER
 rm $MOUNT_POINT/services.sh
 
-# Ensure all directories and mount points are setup.
-cp scripts/setup-build-directories.sh $MOUNT_POINT/setup-build-directories.sh
-chroot $MOUNT_POINT/ /bin/bash /setup-build-directories.sh
-rm $MOUNT_POINT/setup-build-directories.sh
-
 # Build all UMD and user space libraries.
 echo "Copying script to build Graphics drivers and other packages..."
-mount -o bind /app/patches $MOUNT_POINT/build/patches
 cp scripts/builder.sh $MOUNT_POINT/builder.sh
 echo "Building User Mode Graphics Drivers..."
-chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --stable --true --true
+chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --stable --true --true --true
 chroot $MOUNT_POINT/ /bin/bash /builder.sh --debug --clean --stable --true
-chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --master --true
+chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --master --true --true --true
 chroot $MOUNT_POINT/ /bin/bash /builder.sh --debug --clean --master --true
 rm $MOUNT_POINT/builder.sh
 
-# Build Kernel and cros_vm.
-mount -o bind /app/drm-intel $MOUNT_POINT/build/drm-intel
-cp scripts/build-kernel-crosvm.sh $MOUNT_POINT/build-kernel-crosvm.sh
-chroot $MOUNT_POINT/ /bin/bash /build-kernel-crosvm.sh
-rm $MOUNT_POINT/build-kernel-crosvm.sh
+# Copy all needed files
 mkdir /app/output/stable
+mkdir /app/output/master
+
 mkdir /app/output/stable/debug
 mkdir /app/output/stable/release
 
-mkdir /app/output/master
 mkdir /app/output/master/debug
 mkdir /app/output/master/release
 
-if [ -f $MOUNT_POINT/build/drm-intel/vmlinux ]; then
-  echo "Copying Kernel image to output/ folder..."
-  cp $MOUNT_POINT/build/drm-intel/vmlinux /app/output/stable/
-  cp $MOUNT_POINT/build/drm-intel/vmlinux /app/output/master/
-else
-  echo "Kernel failed to built. Nothing to copy."
-fi
+echo "Copying Kernel image to output/ folder..."
+cp $MOUNT_POINT/build/stable/drm-intel/output/vmlinux /app/output/stable/
+cp $MOUNT_POINT/build/master/drm-intel/output/vmlinux /app/output/master/
 
-  echo "Copying crosvm to output/ folder..."
+echo "Copying crosvm to output/ folder..."
 cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
 cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
 cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/stable/release/

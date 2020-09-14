@@ -8,6 +8,7 @@ CLEAN_BUILD=${2:-"incremental"}
 CURRENT_CHANNEL=${3:-"stable"}
 UPDATE_CHANNEL=${4:-"false"}
 BUILD_RUST=${5:-"false"}
+BUILD_KERNEL=${6:-"false"}
 LOCAL_BUILD_TYPE=release
 LOCAL_CHANNEL=stable
 LOCAL_UPDATE_CHANNEL=0
@@ -290,6 +291,21 @@ cd $WORKING_DIR/cros_vm/src/platform2/vm_tools/sommelier
 # Build Sommelier
 mesonclean_asneeded
 meson setup $LOCAL_MESON_BUILD_DIR -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=$WLD64/lib/x86_64-linux-gnu -Dprefix=$WLD64 && ninja -C $LOCAL_MESON_BUILD_DIR install
+
+
+if [ $BUILD_KERNEL == "--true" ]; then
+cd $WORKING_DIR/drm-intel
+KERNEL_OUTPUT_DIR=output
+if [[ ($CLEAN_BUILD == "--clean" && -d $KERNEL_OUTPUT_DIR) ]]; then
+  make clean
+  rm -rf $KERNEL_OUTPUT_DIR
+fi
+
+make x86_64_defconfig
+make
+mkdir $KERNEL_OUTPUT_DIR
+mv vmlinux $KERNEL_OUTPUT_DIR/
+fi
 
 # 32 bit builds
 export ACLOCAL_PATH=$WLD32/share/aclocal
