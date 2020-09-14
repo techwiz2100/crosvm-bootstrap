@@ -57,9 +57,13 @@ rm $MOUNT_POINT/setup-build-directories.sh
 
 # Build all UMD and user space libraries.
 echo "Copying script to build Graphics drivers and other packages..."
+mount -o bind /app/patches $MOUNT_POINT/build/patches
 cp scripts/builder.sh $MOUNT_POINT/builder.sh
 echo "Building User Mode Graphics Drivers..."
-chroot $MOUNT_POINT/ /bin/bash /builder.sh
+chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --stable --true --true
+chroot $MOUNT_POINT/ /bin/bash /builder.sh --debug --clean --stable --true
+chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --master --true
+chroot $MOUNT_POINT/ /bin/bash /builder.sh --debug --clean --master --true
 rm $MOUNT_POINT/builder.sh
 
 # Build Kernel and cros_vm.
@@ -68,25 +72,38 @@ mount -o bind /app/cros_vm $MOUNT_POINT/build/cros_vm
 cp scripts/build-kernel-crosvm.sh $MOUNT_POINT/build-kernel-crosvm.sh
 chroot $MOUNT_POINT/ /bin/bash /build-kernel-crosvm.sh
 rm $MOUNT_POINT/build-kernel-crosvm.sh
+mkdir /app/output/stable
+mkdir /app/output/stable/debug
+mkdir /app/output/stable/release
+
+mkdir /app/output/master
+mkdir /app/output/master/debug
+mkdir /app/output/master/release
+
 if [ -f $MOUNT_POINT/build/drm-intel/vmlinux ]; then
   echo "Copying Kernel image to output/ folder..."
-  cp $MOUNT_POINT/build/drm-intel/vmlinux /app/output/
+  cp $MOUNT_POINT/build/drm-intel/vmlinux /app/output/stable/
+  cp $MOUNT_POINT/build/drm-intel/vmlinux /app/output/master/
 else
   echo "Kernel failed to built. Nothing to copy."
 fi
 
 if [ -f $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm ]; then
   echo "Copying crosvm to output/ folder..."
-  mkdir /app/output/debug
-  mkdir /app/output/release
 
-  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm /app/output/debug/
-  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/debug/
-  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/debug/
+  cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
+  cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
+  cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/stable/release/
+  cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/debug/
+  cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/debug/
+  cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/stable/debug/
 
-  cp $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/release/crosvm /app/output/release/
-  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libgbm.* /app/output/release/
-  cp $MOUNT_POINT/usr/local/lib/x86_64-linux-gnu/libminigbm.* /app/output/release/
+  cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libgbm.* /app/output/master/release/
+  cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/release/
+  cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/master/release/
+  cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/master/debug/
+  cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/debug/
+  cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/master/debug/
 else
   echo "Crosvm failed to be built. Nothing to copy."
 fi

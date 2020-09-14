@@ -10,7 +10,7 @@ ExecStartPre=/bin/sh -c \
                       /bin/systemctl --user set-environment \
                           SOMMELIER_DRM_DEVICE=/dev/dri/renderD128; \
                   /bin/true"
-ExecStart=/usr/local/bin/sommelier \
+ExecStart=/opt/stable/release/x86_64/bin/sommelier \
               --master \
               --sd-notify="READY=1" \
               --socket=wayland-%i \

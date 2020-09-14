@@ -25,7 +25,7 @@ ExecStartPre=/bin/sh -c \
                           SOMMELIER_DRM_DEVICE=/dev/dri/renderD128 \
                           SOMMELIER_GLAMOR=1; \
                   /bin/true"
-ExecStart=/usr/local/bin/sommelier \
+ExecStart=/opt/stable/release/x86_64/bin/sommelier \
               -X \
               --master \
               --x-display=%i \

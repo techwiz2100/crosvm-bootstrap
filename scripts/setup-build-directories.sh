@@ -13,6 +13,14 @@ else
   echo "/build exists."
 fi
 
+if [ ! -d "/build/patches" ]
+then
+  echo "Creating /build/patches directory."
+  mkdir /build/patches
+else
+  echo "/build/patches exists."
+fi
+
 echo "Checking if /build/cros_vm exists.."
 if [ ! -d "/build/cros_vm" ]
 then
