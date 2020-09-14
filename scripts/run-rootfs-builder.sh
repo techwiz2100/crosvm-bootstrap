@@ -14,10 +14,6 @@ if [ ! -e "$MOUNT_POINT" ]; then
     mkdir -p "$MOUNT_POINT"
 fi
 
-if [ ! -e "$MOUNT_POINT/build" ]; then
-    mkdir -p "$MOUNT_POINT/build"
-fi
-
 # Generate initial rootfs image.
 echo "Generating rootfs image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --create --mount
@@ -53,6 +49,10 @@ cp -rf config/guest/* $MOUNT_POINT/
 cp scripts/services.sh $MOUNT_POINT/services.sh
 chroot $MOUNT_POINT/ /bin/bash /services.sh $USER
 rm $MOUNT_POINT/services.sh
+
+if [ ! -e $MOUNT_POINT/build ]; then
+    mkdir -p $MOUNT_POINT/build
+fi
 
 # Build all UMD and user space libraries.
 echo "Copying script to build Graphics drivers and other packages..."
