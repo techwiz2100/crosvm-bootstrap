@@ -271,35 +271,25 @@ mesonclean_asneeded
 
 meson setup $LOCAL_MESON_BUILD_DIR -Dplatforms=auto -Dminigbm_allocation=true  --buildtype $LOCAL_BUILD_TYPE -Dprefix=$WLD64 && ninja -C $LOCAL_MESON_BUILD_DIR install
 
-if [ -d "/build/cros_vm/src/platform/crosvm" ]
-then
-  echo "Found cros_vm folder. Building cros_vm..."
-  cd /build/cros_vm/src/platform/crosvm
+echo "Building 64 bit CrosVM............"
+cd $WORKING_DIR/cros_vm/src/platform/crosvm
+cargo clean --target-dir $LOCAL_MESON_BUILD_DIR
+rm -rf $LOCAL_MESON_BUILD_DIR
+if [[ ($CLEAN_BUILD == "--clean" && -d $LOCAL_MESON_BUILD_DIR) ]]; then
   cargo clean --target-dir $LOCAL_MESON_BUILD_DIR
   rm -rf $LOCAL_MESON_BUILD_DIR
-  if [[ ($CLEAN_BUILD == "--clean" && -d $LOCAL_MESON_BUILD_DIR) ]]; then
-    cargo clean --target-dir $LOCAL_MESON_BUILD_DIR
-    rm -rf $LOCAL_MESON_BUILD_DIR
-  fi
-  if [ $BUILD_TYPE == "--debug" ]; then
-    cargo build --target-dir $LOCAL_MESON_BUILD_DIR --features 'default-no-sandbox wl-dmabuf gpu x'
-  else
-     cargo build --target-dir $LOCAL_MESON_BUILD_DIR --release --features 'default-no-sandbox wl-dmabuf gpu x'
-  fi
+fi
+if [ $BUILD_TYPE == "--debug" ]; then
+  cargo build --target-dir $LOCAL_MESON_BUILD_DIR --features 'default-no-sandbox wl-dmabuf gpu x'
 else
-  echo "Unable to find cros_vm folder.cros_vm is not built."
+  cargo build --target-dir $LOCAL_MESON_BUILD_DIR --release --features 'default-no-sandbox wl-dmabuf gpu x'
 fi
 
-if [ -d "/build/cros_vm/src/platform2/vm_tools/sommelier" ]
-then
-  echo "Found sommelier folder. Building sommelier..."
-  cd /build/cros_vm/src/platform2/vm_tools/sommelier
-  # Build Sommelier
-  mesonclean_asneeded
-  meson setup $LOCAL_MESON_BUILD_DIR -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=$WLD64/lib/x86_64-linux-gnu -Dprefix=$WLD64 && ninja -C $LOCAL_MESON_BUILD_DIR install
-else
-  echo "Unable to find Sommelier folder.Sommelier is not built."
-fi
+echo "Building 64 bit sommelier..."
+cd $WORKING_DIR/cros_vm/src/platform2/vm_tools/sommelier
+# Build Sommelier
+mesonclean_asneeded
+meson setup $LOCAL_MESON_BUILD_DIR -Dxwayland_path=/usr/bin/XWayland -Dxwayland_gl_driver_path=$WLD64/lib/x86_64-linux-gnu -Dprefix=$WLD64 && ninja -C $LOCAL_MESON_BUILD_DIR install
 
 # 32 bit builds
 export ACLOCAL_PATH=$WLD32/share/aclocal

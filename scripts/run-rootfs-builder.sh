@@ -68,7 +68,6 @@ rm $MOUNT_POINT/builder.sh
 
 # Build Kernel and cros_vm.
 mount -o bind /app/drm-intel $MOUNT_POINT/build/drm-intel
-mount -o bind /app/cros_vm $MOUNT_POINT/build/cros_vm
 cp scripts/build-kernel-crosvm.sh $MOUNT_POINT/build-kernel-crosvm.sh
 chroot $MOUNT_POINT/ /bin/bash /build-kernel-crosvm.sh
 rm $MOUNT_POINT/build-kernel-crosvm.sh
@@ -88,25 +87,20 @@ else
   echo "Kernel failed to built. Nothing to copy."
 fi
 
-if [ -f $MOUNT_POINT/build/cros_vm/src/platform/crosvm/target/debug/crosvm ]; then
   echo "Copying crosvm to output/ folder..."
+cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
+cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
+cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/stable/release/
+cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/debug/
+cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/debug/
+cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/stable/debug/
 
-  cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
-  cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
-  cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/stable/release/
-  cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/debug/
-  cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/debug/
-  cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/stable/debug/
-
-  cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libgbm.* /app/output/master/release/
-  cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/release/
-  cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/master/release/
-  cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/master/debug/
-  cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/debug/
-  cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/master/debug/
-else
-  echo "Crosvm failed to be built. Nothing to copy."
-fi
+cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libgbm.* /app/output/master/release/
+cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/release/
+cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/master/release/
+cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/master/debug/
+cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/debug/
+cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/master/debug/
 
 echo "Unmounting image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --unmount

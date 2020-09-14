@@ -21,15 +21,6 @@ else
   echo "/build/patches exists."
 fi
 
-echo "Checking if /build/cros_vm exists.."
-if [ ! -d "/build/cros_vm" ]
-then
-  echo "Creating /build/cros_vm directory."
-  mkdir /build/cros_vm
-else
-  echo "/build/cros_vm exists."
-fi
-
 echo "Checking if /build/drm-intel exists.."
 if [ ! -d "/build/drm-intel" ]
 then
