@@ -75,23 +75,23 @@ mkdir /app/output/master/debug
 mkdir /app/output/master/release
 
 echo "Copying Kernel image to output/ folder..."
-cp $MOUNT_POINT/build/stable/drm-intel/output/vmlinux /app/output/stable/
-cp $MOUNT_POINT/build/master/drm-intel/output/vmlinux /app/output/master/
+mv $MOUNT_POINT/build/stable/drm-intel/output/vmlinux /app/output/stable/
+mv $MOUNT_POINT/build/master/drm-intel/output/vmlinux /app/output/master/
 
 echo "Copying crosvm to output/ folder..."
-cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
-cp $MOUNT_POINT/opt/stable/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
-cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/stable/release/
-cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/debug/
-cp $MOUNT_POINT/opt/stable/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/debug/
-cp $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/stable/debug/
+cp $MOUNT_POINT/opt/stable/release/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
+cp $MOUNT_POINT/opt/stable/release/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
+mv $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/release/crosvm /app/output/stable/release/
+cp $MOUNT_POINT/opt/stable/debug/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/debug/
+cp $MOUNT_POINT/opt/stable/debug/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/debug/
+mv $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.debug.x86_64/debug/crosvm /app/output/stable/debug/
 
-cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libgbm.* /app/output/master/release/
-cp $MOUNT_POINT/opt/master/release/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/release/
-cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.release.x86_64/target/release/crosvm /app/output/master/release/
-cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libgbm.* /app/output/master/debug/
-cp $MOUNT_POINT/opt/master/debug/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/debug/
-cp $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.debug.x86_64/target/debug/crosvm /app/output/master/debug/
+cp $MOUNT_POINT/opt/master/release/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/master/release/
+cp $MOUNT_POINT/opt/master/release/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/release/
+mv $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.release.x86_64/release/crosvm /app/output/master/release/
+cp $MOUNT_POINT/opt/master/debug/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/master/debug/
+cp $MOUNT_POINT/opt/master/debug/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/debug/
+mv $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.debug.x86_64/debug/crosvm /app/output/master/debug/
 
 echo "Unmounting image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --unmount

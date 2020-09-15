@@ -26,3 +26,4 @@ fi
 
 echo "Your system seems ready to go."
 echo "Start the build with clean-build.sh"
+

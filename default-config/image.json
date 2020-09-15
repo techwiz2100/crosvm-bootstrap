@@ -4,5 +4,5 @@
     "fstype": "ext4",
     "isSparse": true,
     "doMount": true,
-    "sizeInMB": 20480
+    "sizeInMB": 30720
 }
