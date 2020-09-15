@@ -3,6 +3,13 @@
 # package-builder.sh
 # Builds all needed drivers, cros_vm and other needed packages.
 
+# exit on any script line that fails
+set -o errexit
+# bail on any unitialized variable reads
+set -o nounset
+# bail on failing commands before last pipe
+set -o pipefail
+
 BUILD_TYPE=${1:-"release"}
 CLEAN_BUILD=${2:-"incremental"}
 CURRENT_CHANNEL=${3:-"stable"}
@@ -286,6 +293,15 @@ else
   cargo build --target-dir $LOCAL_MESON_BUILD_DIR --release --features 'default-no-sandbox wl-dmabuf gpu x'
 fi
 
+if [ -f $LOCAL_MESON_BUILD_DIR/$LOCAL_CHANNEL/crosvm ]; then
+  if [ -e /build/output ]; then
+    echo "Copying CrosVM to Output Directory."
+    mv $LOCAL_MESON_BUILD_DIR/$LOCAL_CHANNEL/crosvm /build/output/$LOCAL_CHANNEL/$LOCAL_BUILD_TYPE/
+    cp /opt/$LOCAL_CHANNEL/$LOCAL_BUILD_TYPE/x86_64/lib/x86_64-linux-gnu/libgbm.* /build/output/$LOCAL_CHANNEL/$LOCAL_BUILD_TYPE/
+    cp /opt/$LOCAL_CHANNEL/$LOCAL_BUILD_TYPE/x86_64/lib/x86_64-linux-gnu/libminigbm.* /build/output/$LOCAL_CHANNEL/$LOCAL_BUILD_TYPE/
+  fi
+fi
+
 echo "Building 64 bit sommelier..."
 cd $WORKING_DIR/cros_vm/src/platform2/vm_tools/sommelier
 # Build Sommelier
@@ -303,8 +319,12 @@ fi
 
 make x86_64_defconfig
 make
-mkdir $KERNEL_OUTPUT_DIR
-mv vmlinux $KERNEL_OUTPUT_DIR/
+if [ -f vmlinux ]; then
+  if [ -e /build/output ]; then
+    mv vmlinux /build/output/$LOCAL_CHANNEL/
+  fi
+fi
+
 fi
 
 # 32 bit builds

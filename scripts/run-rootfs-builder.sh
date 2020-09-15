@@ -4,6 +4,13 @@
 # Generate debian rootfs image using specified config file and mounted in the
 # container at the specified path (should match mountPoint specified in json file)
 
+# exit on any script line that fails
+set -o errexit
+# bail on any unitialized variable reads
+set -o nounset
+# bail on failing commands before last pipe
+set -o pipefail
+
 USER=${1:-"test"}
 PASS=${2:-"test0000"}
 CONFIG_FILE=${3:-"config/image.json"}
@@ -17,6 +24,15 @@ fi
 # Generate initial rootfs image.
 echo "Generating rootfs image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --create --mount
+
+mkdir /app/output/stable
+mkdir /app/output/master
+
+mkdir /app/output/stable/debug
+mkdir /app/output/stable/release
+
+mkdir /app/output/master/debug
+mkdir /app/output/master/release
 
 echo "Bootstrapping debian userspace"
 debootstrap --arch=amd64 testing $MOUNT_POINT
@@ -52,7 +68,10 @@ rm $MOUNT_POINT/services.sh
 
 if [ ! -e $MOUNT_POINT/build ]; then
     mkdir -p $MOUNT_POINT/build
+    mkdir -p $MOUNT_POINT/build/output
 fi
+
+mount -o bind /app/output $MOUNT_POINT/build/output
 
 # Build all UMD and user space libraries.
 echo "Copying script to build Graphics drivers and other packages..."
@@ -63,35 +82,6 @@ chroot $MOUNT_POINT/ /bin/bash /builder.sh --debug --clean --stable --true
 chroot $MOUNT_POINT/ /bin/bash /builder.sh --release --clean --master --true --true --true
 chroot $MOUNT_POINT/ /bin/bash /builder.sh --debug --clean --master --true
 rm $MOUNT_POINT/builder.sh
-
-# Copy all needed files
-mkdir /app/output/stable
-mkdir /app/output/master
-
-mkdir /app/output/stable/debug
-mkdir /app/output/stable/release
-
-mkdir /app/output/master/debug
-mkdir /app/output/master/release
-
-echo "Copying Kernel image to output/ folder..."
-mv $MOUNT_POINT/build/stable/drm-intel/output/vmlinux /app/output/stable/
-mv $MOUNT_POINT/build/master/drm-intel/output/vmlinux /app/output/master/
-
-echo "Copying crosvm to output/ folder..."
-cp $MOUNT_POINT/opt/stable/release/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/release/
-cp $MOUNT_POINT/opt/stable/release/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/release/
-mv $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.release.x86_64/release/crosvm /app/output/stable/release/
-cp $MOUNT_POINT/opt/stable/debug/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/stable/debug/
-cp $MOUNT_POINT/opt/stable/debug/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/stable/debug/
-mv $MOUNT_POINT/build/stable/cros_vm/src/platform/crosvm/build.debug.x86_64/debug/crosvm /app/output/stable/debug/
-
-cp $MOUNT_POINT/opt/master/release/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/master/release/
-cp $MOUNT_POINT/opt/master/release/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/release/
-mv $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.release.x86_64/release/crosvm /app/output/master/release/
-cp $MOUNT_POINT/opt/master/debug/x86_64/lib/x86_64-linux-gnu/libgbm.* /app/output/master/debug/
-cp $MOUNT_POINT/opt/master/debug/x86_64/lib/x86_64-linux-gnu/libminigbm.* /app/output/master/debug/
-mv $MOUNT_POINT/build/master/cros_vm/src/platform/crosvm/build.debug.x86_64/debug/crosvm /app/output/master/debug/
 
 echo "Unmounting image"
 python3 scripts/create-image.py --spec $CONFIG_FILE --unmount
